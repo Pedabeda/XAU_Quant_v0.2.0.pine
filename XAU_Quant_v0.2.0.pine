@@ -303,24 +303,28 @@ if barstate.islast and showDashboard
     table.cell(dashboard,1,0,"Status")
 
     table.cell(dashboard,0,1,"Trend")
-string trendText =
-     trendState == TrendState.Bullish ? "Bullish" :
-     trendState == TrendState.Bearish ? "Bearish" :
-     "Neutral"
 
-table.cell(dashboard,1,1,trendText)
+string trendText = "Neutral"
 
-    table.cell(dashboard,0,2,"State")
-    table.cell(dashboard,1,2,str.tostring(tradeState))
+if trendState == TrendState.Bullish
+    trendText := "Bullish"
+else if trendState == TrendState.Bearish
+    trendText := "Bearish"
 
-    table.cell(dashboard,0,3,"BOS")
-    table.cell(dashboard,1,3,"-")
+table.cell(dashboard, 0, 1, "Trend")
+table.cell(dashboard, 1, 1, trendText)
 
-    table.cell(dashboard,0,4,"Sweep")
-    table.cell(dashboard,1,4,"-")
+table.cell(dashboard, 0, 2, "State")
+table.cell(dashboard, 1, 2, str.tostring(tradeState))
 
-    table.cell(dashboard,0,5,"FVG")
-    table.cell(dashboard,1,5,"-")
+table.cell(dashboard, 0, 3, "BOS")
+table.cell(dashboard, 1, 3, "-")
+
+table.cell(dashboard, 0, 4, "Sweep")
+table.cell(dashboard, 1, 4, "-")
+
+table.cell(dashboard, 0, 5, "FVG")
+table.cell(dashboard, 1, 5, "-")
 
 
 //====================================================
