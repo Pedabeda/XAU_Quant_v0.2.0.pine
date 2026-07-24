@@ -140,6 +140,151 @@ f_detectFVG() =>
 f_calculatePositionSize(stopDistance) =>
     0.0
 
+//====================================================
+// MARKET DATA ENGINE
+// Commit 2
+//====================================================
+
+// ---------- H4 DATA ----------
+
+h4Close = request.security(
+     syminfo.tickerid,
+     TF_H4,
+     close,
+     barmerge.gaps_off,
+     barmerge.lookahead_off
+)
+
+h4EMAFast = request.security(
+     syminfo.tickerid,
+     TF_H4,
+     ta.ema(close, emaFastLength),
+     barmerge.gaps_off,
+     barmerge.lookahead_off
+)
+
+h4EMASlow = request.security(
+     syminfo.tickerid,
+     TF_H4,
+     ta.ema(close, emaSlowLength),
+     barmerge.gaps_off,
+     barmerge.lookahead_off
+)
+
+
+// ---------- H1 DATA ----------
+
+h1High = request.security(
+     syminfo.tickerid,
+     TF_H1,
+     high,
+     barmerge.gaps_off,
+     barmerge.lookahead_off
+)
+
+h1Low = request.security(
+     syminfo.tickerid,
+     TF_H1,
+     low,
+     barmerge.gaps_off,
+     barmerge.lookahead_off
+)
+
+h1Close = request.security(
+     syminfo.tickerid,
+     TF_H1,
+     close,
+     barmerge.gaps_off,
+     barmerge.lookahead_off
+)
+
+
+// ---------- ATR ----------
+
+atr = ta.atr(atrLength)
+
+
+// ---------- PIVOTS ----------
+
+h1PivotHigh = request.security(
+     syminfo.tickerid,
+     TF_H1,
+     ta.pivothigh(high, pivotStrength, pivotStrength),
+     barmerge.gaps_off,
+     barmerge.lookahead_off
+)
+
+h1PivotLow = request.security(
+     syminfo.tickerid,
+     TF_H1,
+     ta.pivotlow(low, pivotStrength, pivotStrength),
+     barmerge.gaps_off,
+     barmerge.lookahead_off
+)
+
+
+//====================================================
+// TREND ENGINE
+//====================================================
+
+f_getTrend() =>
+
+    TrendState state = TrendState.Neutral
+
+    if h4EMAFast > h4EMASlow and h4Close > h4EMAFast
+        state := TrendState.Bullish
+
+    else if h4EMAFast < h4EMASlow and h4Close < h4EMAFast
+        state := TrendState.Bearish
+
+    state
+
+
+trendState := f_getTrend()
+
+
+//====================================================
+// UPDATE SWINGS
+//====================================================
+
+if not na(h1PivotHigh)
+    lastSwingHigh := h1PivotHigh
+
+if not na(h1PivotLow)
+    lastSwingLow := h1PivotLow
+
+
+//====================================================
+// VISUAL DEBUG
+//====================================================
+
+plot(
+     h4EMAFast,
+     title="H4 EMA 50",
+     color=color.green,
+     linewidth=2
+)
+
+plot(
+     h4EMASlow,
+     title="H4 EMA 200",
+     color=color.red,
+     linewidth=2
+)
+
+plot(
+     lastSwingHigh,
+     title="Last Swing High",
+     color=color.red,
+     style=plot.style_linebr
+)
+
+plot(
+     lastSwingLow,
+     title="Last Swing Low",
+     color=color.lime,
+     style=plot.style_linebr
+)
 
 //====================================================
 // DASHBOARD PLACEHOLDER
@@ -158,7 +303,12 @@ if barstate.islast and showDashboard
     table.cell(dashboard,1,0,"Status")
 
     table.cell(dashboard,0,1,"Trend")
-    table.cell(dashboard,1,1,str.tostring(trendState))
+string trendText =
+     trendState == TrendState.Bullish ? "Bullish" :
+     trendState == TrendState.Bearish ? "Bearish" :
+     "Neutral"
+
+table.cell(dashboard,1,1,trendText)
 
     table.cell(dashboard,0,2,"State")
     table.cell(dashboard,1,2,str.tostring(tradeState))
