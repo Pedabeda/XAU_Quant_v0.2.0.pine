@@ -226,7 +226,6 @@ h1PivotLow = request.security(
 // TREND ENGINE
 //====================================================
 
-f_getTrend() =>
 
     TrendState state = TrendState.Neutral
 
