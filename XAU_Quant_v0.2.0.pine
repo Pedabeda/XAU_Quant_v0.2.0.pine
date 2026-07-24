@@ -121,8 +121,7 @@ string TF_M15 = "15"
 //====================================================
 
 // Trend Engine
-f_getTrend() =>
-    TrendState.Neutral
+
 
 // Market Structure
 f_detectStructure() =>
